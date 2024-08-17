@@ -13,7 +13,7 @@ reader = easyocr.Reader(["en"], gpu=False)
 
 text_ = reader.readtext(img)
 
-myBook = ''
+myBook = 'This is an example of a story where aryaen refuses to cooperate'
 
 for t in text_:
     bbox, text, score = t
