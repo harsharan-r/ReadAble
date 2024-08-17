@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "../../../Waterloo/C++"
+		},
+		{
+			"name": "ReadAble",
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"iostream": "cpp"
+		}
+	}
+}
