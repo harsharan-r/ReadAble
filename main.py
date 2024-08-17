@@ -13,6 +13,8 @@ reader = easyocr.Reader(["en"], gpu=False)
 
 text_ = reader.readtext(img)
 
+myBook = ''
+
 for t in text_:
     bbox, text, score = t
 
