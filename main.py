@@ -7,6 +7,8 @@ import pyttsx3
 import time
 import wave
 
+#install pyttsx3, opencv-contrib-python, cvlib, pygame, matplotlib, easyocr,  PyObjC
+
 
 #init and setup TTS libraries
 mixer.init() 
