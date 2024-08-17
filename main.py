@@ -13,7 +13,8 @@ import wave
 #init and setup TTS libraries
 mixer.init() 
 speaker = pyttsx3.init()
-speaker.setProperty('rate', 150)  # Speed of speech (words per minute)
+wpm = 150
+speaker.setProperty('rate', wpm)  # Speed of speech (words per minute)
 speaker.setProperty('volume', 1.0)  # Volume (0.0 to 1.0)
 
 #helper function for TTS
@@ -32,9 +33,9 @@ def speak(text):
     
 #testing tts
 # note the pygame command is nonobstructing so there must be code to continously run the program for the audio to run  
-speak("hello this is a test")
-mixer.music.play() 
-time.sleep(get_duration_wave("output.wav"))
+# speak("hello this is a test")
+# mixer.music.play() 
+# time.sleep(get_duration_wave("output.wav"))
 
 
 
