@@ -14,6 +14,9 @@ mphands = mp.solutions.hands
 hands = mphands.Hands()
 
 release = True
+interrupt = False
+
+wordsDictionary = {}
 
 # Assuming these are functions and attributes in the 'main' module
 import main  
@@ -28,37 +31,53 @@ def readFrame(img):
     reader = easyocr.Reader(["en"], gpu=False)
     text = ""
     bboxs = []
+    delays = []
     
     for t in reader.readtext(img):
         bbox, text_, score = t
         bboxs.append(bbox)
         text += (" " + text_)
     
+        #wordsDictionary[bbox] = text_
+        delays.append((len(text_.split())/main.wpm*60))
+
+
+
     main.speak(text)
     main.mixer.music.play()
-    highlightWords(bboxs, len(text), main.wpm)
+    highlightWords(bboxs, delays)
+
+def Pause():
+    main.mixer.music.pause()
+
+def Resume():
+    main.mixer.music.unpause()
     
 
-def highlightWords(bboxs, words, wpm):
-    delay = words / wpm
+def highlightWords(bboxs, delays):
+    
     global bbtop, bbbot
-    print(bboxs)
 
-    for bbox in bboxs:
+
+    for i,bbox in enumerate(bboxs):
         # Draw a bounding box around the recognized text area
         bbtop = tuple(map(int, bbox[0]))
         bbbot = tuple(map(int, bbox[2]))
         
-        print(bbbot)
-
         # Delay to simulate the reading pace
-        time.sleep(delay)
+        while interrupt:
+            time.sleep(0.5)
+        time.sleep(delays[i])
+        
+
+    bbtop = [0,0]
+    bbbot = [0,0]
         
         # Optional: You can clear the previous bounding box by drawing over it with the original frame, 
         # or simply keep adding bounding boxes as the reading progresses.
     
 def loop():
-    global release
+    global release,interrupt
     ret, frame = video.read()
     
     if not ret:
@@ -71,8 +90,17 @@ def loop():
     if results.multi_hand_landmarks:
         for hand_landmarks in results.multi_hand_landmarks:
             mp_drawing.draw_landmarks(frame, hand_landmarks, mphands.HAND_CONNECTIONS)
+
+        if main.mixer.music.get_busy():
+            Pause()
+            interrupt = True
+
     else:
-        if release:
+        if interrupt:
+            Resume()
+            interrupt = False
+
+        elif release:
             # Run readFrame in a separate thread
             thread = threading.Thread(target=readFrame, args=(frame,))
             thread.start()
