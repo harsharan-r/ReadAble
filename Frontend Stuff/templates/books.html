@@ -1,0 +1,84 @@
+!<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body class="books-body">
+    <div class="navbar">
+        <div class="container book-nav">
+            <ul>
+                <li>
+                    <a href="{{ url_for('index') }}">
+                    <!-- <a href="{{ url_for('index') }}"> -->
+                        <i class="icon ph-bold ph-house-simple"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('camera_page') }}">
+                        <i class="icon ph-bold ph-camera"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="icon ph-bold ph-books"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <h1>Saved Books</h1>
+
+    <div class="book-container">
+        <div class="left-box">
+            <h5 id="book-content" class="book-text">Select a book to read.</h5>
+        </div>
+    
+        <div class="right-box">
+            <ul>
+                <!-- <li class="book book1 active">Frankenstein by Mary Shelley</li>
+                <li class="book book2">Percy Jackson by Rick Riordan</li>
+                <li class="book book3">Harry Potter by J.K. Rowling</li> -->
+                {% for file in files %}
+                    <li>
+                        <a class="book-li" onclick="loadBookContent('{{ file }}'); return false;" style="text-decoration: none; color: #e3e3e3;">{{ file }}</a>
+                    </li>
+                {% else %}
+                    <li>No books found.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        $(".right-box > ul > li").click(function (e){
+            // Removes from other tabs
+            $(this).siblings().removeClass("active");
+            // Adds class to clicked tab
+            $(this).toggleClass("active");
+        });
+    </script>
+
+    <script>
+        function loadBookContent(filename) {
+            fetch(`/book_content/${filename}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.content) {
+                        document.getElementById('book-content').innerText = data.content;
+                    } else {
+                        document.getElementById('book-content').innerText = 'Error loading content.';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('book-content').innerText = 'Error loading content.';
+                });
+        }
+    </script>
+</body>
+</html>

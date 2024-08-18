@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera</title>
+    <link rel="stylesheet" href="static/css/main.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+</head>
+<body class="camera-body">
+    <div class="navbar">
+        <div class="container">
+            <ul>
+                <li>
+                    <!-- <a href="index.html"> -->
+                    <a href="{{ url_for('index') }}">
+                        <i class="icon ph-bold ph-house-simple"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="icon ph-bold ph-camera"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('books') }}">
+                        <i class="icon ph-bold ph-books"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="camera-container">
+        <img src="{{ url_for('video_feed') }}" alt="Camera Feed" id="videoFeed">
+
+        <div class="left-side">
+            <h1>Camera</h1>
+            <h4><a href="">Instructions: </a> Place your book so it shows up on the screen, change the speed if needed and hit Start.</h4>
+            <div class="btn-container">
+                <a onclick="setBooleanTrue()" href="" class="start btn">Start</a>
+                <a onclick="toggleSpeed()" href="" class="speed btn active">2x</a>
+            </div>
+
+            <h4 id="definition-output"><a href="" class="define-word">Word: </a>Point at a word and it's definition will show here.</h4>
+
+            <div class="contain-btn">
+                <form action="/save_words" method="POST">
+                    <input name="bookname" placeholder="Book Name" type="text" required>
+                    <button type="submit" class="store-book">Store Book</button>
+                </form>
+            </div>
+            
+        </div>
+    </div>    
+    
+    <script>
+        $(".btn-container > .speed").click(function (e) {
+            e.preventDefault();  // Prevent default link behavior
+            
+            // Check if the element has the 'active' class before toggling
+            if ($(this).hasClass("active")) {
+                $(this).text("1x");  // Text for the 'active' state
+            } else {
+                $(this).text("2x");  // Text for the 'inactive' state
+            }
+
+            // Toggle the 'active' class after setting the text
+            $(this).toggleClass("active");
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const socket = io();
+
+            // Listen for the "update_definition" event from the server
+            socket.on('update_definition', (data) => {
+                if (data.word && data.definition) {
+                    // Update the word inside the <a> tag
+                    const wordElement = document.querySelector('.define-word');
+                    wordElement.textContent = `${data.word}: `;
+
+                    // Update the rest of the definition
+                    const definitionElement = document.getElementById('definition-output');
+                    definitionElement.innerHTML = `<a href="" class="define-word">${data.word}: </a> ${data.definition}`;
+                }
+            });
+        });
+
+        function setBooleanTrue() {
+            fetch('/set_boolean', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ boolean_value: true })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+        function toggleSpeed() {
+            fetch('/toggle_speed', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Speed toggled:', data.new_speed);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+
+</body>
+</html>
