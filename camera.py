@@ -138,6 +138,8 @@ def loop():
 
 
     cv2.rectangle(frame, bbtop, bbbot, (0, 255, 0), 2)
+
+    
     cv2.imshow("Object Detection", frame)
 
 while True:
