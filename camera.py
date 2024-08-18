@@ -18,6 +18,11 @@ interrupt = False
 
 wordsDictionary = {}
 
+definedWord = ""
+
+image_width = 640
+image_height = 480
+
 # Assuming these are functions and attributes in the 'main' module
 import main  
 
@@ -27,7 +32,7 @@ bbtop = [0,0]
 bbbot = [0,0]
 
 def readFrame(img):
-    global main
+    global main,wordsDictionary
     reader = easyocr.Reader(["en"], gpu=False)
     text = ""
     bboxs = []
@@ -38,10 +43,8 @@ def readFrame(img):
         bboxs.append(bbox)
         text += (" " + text_)
     
-        #wordsDictionary[bbox] = text_
+        wordsDictionary[text_] = [tuple(map(int, bbox[0])), tuple(map(int, bbox[2]))]
         delays.append((len(text_.split())/main.wpm*60))
-
-
 
     main.speak(text)
     main.mixer.music.play()
@@ -57,8 +60,6 @@ def Resume():
 def highlightWords(bboxs, delays):
     
     global bbtop, bbbot
-
-
     for i,bbox in enumerate(bboxs):
         # Draw a bounding box around the recognized text area
         bbtop = tuple(map(int, bbox[0]))
@@ -87,9 +88,38 @@ def loop():
     results = hands.process(frame)
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
+
     if results.multi_hand_landmarks:
         for hand_landmarks in results.multi_hand_landmarks:
             mp_drawing.draw_landmarks(frame, hand_landmarks, mphands.HAND_CONNECTIONS)
+            fingerx = hand_landmarks.landmark[mphands.HandLandmark.INDEX_FINGER_TIP].x * image_width
+            fingery = hand_landmarks.landmark[mphands.HandLandmark.INDEX_FINGER_TIP].y * image_height
+
+        closest = 1000
+        closest_index = 0
+
+        for i,pos in enumerate(list(wordsDictionary.values())):
+            if abs(fingery - pos[1][1]) < closest:
+                closest = abs(fingery-pos[1][1])
+                closest_index = i
+
+     
+        closest_xvalue = list(wordsDictionary.values())[closest_index][0][0]
+        closest_string = list(wordsDictionary.keys())[closest_index]
+        intervals = abs(closest_xvalue - list(wordsDictionary.values())[closest_index][1][0])/len(closest_string.split())
+
+        posx = closest_xvalue
+        closest = 1000
+        closest_index = 0
+
+        for i in range(len(closest_string.split())):
+            if abs(fingerx - posx) < closest:
+                closest = abs(fingerx - posx)
+                closest_index = i
+            posx += intervals
+
+        print(closest_string.split()[closest_index])
+        
 
         if main.mixer.music.get_busy():
             Pause()
