@@ -1,5 +1,8 @@
 import os
 from main import *
+from PyMultiDictionary import MultiDictionary
+dictionary = MultiDictionary()
+
 lastelement=False
 count=0
 
@@ -16,18 +19,32 @@ for i in InputString:
         lastelement=True
     if lastelement==True:
         word+=i
-        StorageList.append(word)
+        StorageList.append(str(word))
         break
     if str(i)!=' ':
         word+=i
     else:
-        StorageList.append(word)
+        StorageList.append(str(word))
         word=''
     count+=1
-    
-
 
 #StorageList = ['ex1','ex2','ex3','ex4'] #add the actual data later
 for i in StorageList:
     StorageFile.write(i)
     StorageFile.write('\n')
+
+
+def getdefinition(word): #function to get the defenition of supplied variable
+    word=str(word)
+    print(word + ':')
+    defenitionstring=str((dictionary.meaning('en',word)))
+    defenitionlist=defenitionstring.split("]")
+    defenitionlist.remove(defenitionlist[0])
+    defenitionstring=str(defenitionlist[0])
+    defenitionlist=defenitionstring.split("\'")   
+        
+    if str(defenitionlist[1])=='':
+        print('Unknown Word')
+    else:
+        print(defenitionlist[1],'\n') 
+
