@@ -26,10 +26,11 @@ hands = mphands.Hands()
 
 release = True
 interrupt = False
+finished = True
 
 wordsDictionary = {}
 
-definedWord = ""
+definedWord = "easy"
 prevDefinedWord = ""
 
 image_width = 640
@@ -58,15 +59,10 @@ def get_definition(word): #function to get the defenition of supplied variable
 
 # Simulate variable changes in Python and emit updated definitions
 def simulate_variable_change():
-    global definedWord, prevDefinedWord
-
-    if definedWord != prevDefinedWord:
-        definition = get_definition(word)
-        # Emit both the word and the definition
-        #socketio.emit('update_definition', {'word': word, 'definition': definition})
-        word = prevDefinedWord
-        time.sleep(0.2)
-    
+    global finished
+    socketio.emit('update_definition', {'word': definedWord, 'definition': get_definition(definedWord)})
+    time.sleep(0.3)
+    finished = True
 
 def readFrame(img):
     global main,wordsDictionary,book_text,playback_speed
@@ -118,7 +114,7 @@ def highlightWords(bboxs, delays):
         # or simply keep adding bounding boxes as the reading progresses.
     
 def loop():
-    global release,interrupt,definedWord
+    global release,interrupt,definedWord,finished, prevDefinedWord
     while True:
         success, frame = video.read()
         
@@ -163,14 +159,14 @@ def loop():
 
                 definedWord = closest_string.split()[closest_index]
                 
-
                 
                 # Define the text to display
-                text = f"{definedWord}"
+                text = definedWord
 
-                if definedWord == '"labyrinthine"':
-                    text = f"{definedWord} : The word labyrinthine is an adjective used to describe something that is intricate, convoluted, or complex, much like a labyrinth. It often refers to something that is difficult to navigate or understand due to its complexity or twists and turns."
-                    socketio.emit('update_definition', {'word': 'labyrinthine', 'definition': 'The word labyrinthine is an adjective used to describe something that is intricate, convoluted, or complex, much like a labyrinth. It often refers to something that is difficult to navigate or understand due to its complexity or twists and turns.'})
+                if finished and prevDefinedWord != definedWord:
+                    socketio.start_background_task(simulate_variable_change)
+                    finished = False
+                    prevDefinedWord = definedWord
 
                 # Set the position, font, scale, color, and thickness
                 position = (50, 50)
@@ -293,7 +289,7 @@ if __name__ == '__main__':
     # app.run(host='0.0.0.0', port=5001)
     # Start the background task that simulates variable changes
 
-    socketio.start_background_task(simulate_variable_change)
+    
     socketio.run(app, host='0.0.0.0', port=5001, debug=True)
 
 video.release()
