@@ -6,7 +6,7 @@ A simple-to-use web app providing real-time educational help to students.
 
 ## Demo
 
-<iframe width="560" height="315" src="https://youtu.be/z2oliS4OltY?si=n9NamQykfu4BMhUw" frameborder="0" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/z2oliS4OltY?si=n9NamQykfu4BMhUw" frameborder="0" allowfullscreen></iframe>
 
 ## Inspiration
 
