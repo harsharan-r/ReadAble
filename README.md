@@ -6,6 +6,8 @@ A simple-to-use web app providing real-time educational help to students.
 
 ## Demo
 
+Check out a demo of this app by clicking below!
+
 [![Demo Video](https://img.youtube.com/vi/z2oliS4OltY/0.jpg)](https://www.youtube.com/watch?v=z2oliS4OltY)
 
 ## Inspiration
@@ -89,3 +91,4 @@ Have you ever seen a new word and wondered what it meant? ReadAble was inspired 
 ## Links
 
 - [Devpost Project Page](https://devpost.com/software/readable-97ox4i)
+- [Demo Video](https://www.youtube.com/watch?v=z2oliS4OltY)
