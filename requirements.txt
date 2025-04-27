@@ -1,0 +1,9 @@
+Flask
+flask-socketio
+opencv-python
+PyMultiDictionary
+mediapipe
+easyocr
+matplotlib
+pygame
+pyttsx3
