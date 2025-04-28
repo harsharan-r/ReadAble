@@ -8,7 +8,7 @@ A simple-to-use web app providing real-time educational help to students.
 
 Check out a demo of this app by clicking below!
 
-[![Demo Video](https://img.youtube.com/vi/z2oliS4OltY/0.jpg)](https://www.youtube.com/watch?v=z2oliS4OltY)
+[![Demo Video](https://github.com/user-attachments/assets/a112a29a-c048-4deb-8599-9d7f5d60c215)](https://www.youtube.com/watch?v=z2oliS4OltY)
 
 ## Inspiration
 
