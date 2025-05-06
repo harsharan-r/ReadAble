@@ -30,12 +30,6 @@ def speak(text):
     speaker.save_to_file(text, "output.wav")
     speaker.runAndWait()
     mixer.music.load("output.wav") 
-    
-#testing tts
-# note the pygame command is nonobstructing so there must be code to continously run the program for the audio to run  
-# speak("hello this is a test")
-# mixer.music.play() 
-# time.sleep(get_duration_wave("output.wav"))
 
 
 
